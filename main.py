@@ -2,37 +2,47 @@ import re
 
 #Filters out the keys that aren't allowed
 def formatWords(word_list):
-    allowedWords = re.compile("[^A-Za-z0-9]+") #sets the allowed keys
+    #sets the allowed keys
+    allowedWords = re.compile("[^A-Za-z0-9]+")
+    
     #filters through your word list keeping only the allowed words
     return list(filter(lambda cursedWord: not allowedWords.search(cursedWord) ,word_list))  
     
 #Goes through the positive, negative and whole word list and counts the occurance of each word in each
 def wordCounter(clean_list, clean_list2, fullList, posDictionary, negDictionary, fullDictionary):
+    
+    #--------------------------------------------------------
+    #G E T T I N G  O C C U R A N C E  O F  E A C H  W O R D
+    #--------------------------------------------------------
+
     #Positive wordcount
-    for word in clean_list: #For each word in word_list 
+    for word in clean_list: #For each word in clean_list 
         posDictionary[word] = posDictionary[word]+1 #Increments key by one  
     print("The positive dictionary:\n" , posDictionary) #Prints the dictionary and its occurances 
-    input("Hit enter to continue:")
+    input("Hit enter to continue:") #This is to break up information into readable chunks
 
     #Negative wordcount
-    for word in clean_list2: #For each word in word_list 
-        negDictionary[word] = negDictionary[word]+1 #Increments key by one  
-    print("The negative dictionary:\n" , negDictionary) #Prints the dictionary and its occurances 
-    input("Hit enter to continue:")
+    for word in clean_list2: 
+        negDictionary[word] = negDictionary[word]+1  
+    print("The negative dictionary:\n" , negDictionary)  
+    input("Hit enter to continue:") 
 
     #Combined wordcount
-    for word in clean_list: #For each word in word_list 
-        fullDictionary[word] = fullDictionary[word]+1 #Increments key by one
-    for word in clean_list2:    
+    for word in clean_list: #For each word in clean_list 
+        fullDictionary[word] = fullDictionary[word]+1 
+    for word in clean_list2: #Then also adds in clean_list2
         fullDictionary[word] = fullDictionary[word]+1
-    print("The whole dictionary:\n" , fullDictionary) #Prints the dictionary and its occurances 
-    input("Hit enter to continue:")
+    print("The whole dictionary:\n" , fullDictionary)  
+    input("Hit enter to continue:") 
 
-    #Probability workout  
+    #-------------------------------------------
+    #G E T T I N G  P R O B A B I L I T Y
+    #-------------------------------------------
+    
     #Postive
-    for word in posDictionary.keys():
-        probability =  (posDictionary[word] / len(clean_list))
-        print(f"The probablility of the word {word} appearing in the positive list is : {probability}")
+    for word in posDictionary.keys(): #Loops through each word in the dictionary
+        probability =  (posDictionary[word] / len(clean_list)) #Works out the probability of the word
+        print(f"The probablility of the word {word} appearing in the positive list is : {probability}") #Prints word and probability
     input("Hit enter to continue:")
 
     #Negative
@@ -50,9 +60,18 @@ def wordCounter(clean_list, clean_list2, fullList, posDictionary, negDictionary,
     input("Hit enter to continue:")
 
 
+    #-------------------------------------------
+    #WHATEVER PART 3 DOES
+    #-------------------------------------------
+
+
 
 #Reads in the File and sorts it into the dictionary. 
 def main():
+    #-------------------------------------------
+    #READING IN DATA & SETTING UP DICTIONARY : 
+    #TODO: If there is more time make this a fuction
+    #-------------------------------------------
     #text_file = open("dataFiles/test/new_test.txt", 'r') #Opens text file in read only
     text_file = open("dataFiles/test/testPos.txt", 'r') 
     read_file = text_file.read() #Variable holding the full unedited tweets
