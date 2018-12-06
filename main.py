@@ -45,6 +45,8 @@ def wordCounter(clean_list, clean_list2, fullList, posDictionary, negDictionary,
     #G E T T I N G  P R O B A B I L I T Y  O F  A  W O R D  B E I N G  P O S I T I V E / N E G A T I V E
     #----------------------------------------------------------------------------------------------------
     vocabPos = {} #Dictionary that stores the probability that a word is positive as its value
+    finalVerdict = {} #Dictionary that stores if the algorithm thinks the tweet is positive or negative
+
     for word in fullDictionary:
         fOccurance = fullDictionary[word]
         posProbability = (posDictionary[word]/fOccurance)
@@ -55,43 +57,18 @@ def wordCounter(clean_list, clean_list2, fullList, posDictionary, negDictionary,
         #print(f"The probablility that the word {word} is Positive: {vocabPos[word]} Negative: {(1 - vocabPos[word])}") 
     #input("Hit enter to continue:")
    
-    #----------------------------------------------------------------------------------------------------
-    #G E T T I N G  P R O B A B I L I T Y  O F  A  W O R D  A P P E A R I N G  I N  A  G I V E N  L I S T 
-    #----------------------------------------------------------------------------------------------------
-    #NOTE: this wasn't needed but I misread the spec and wrote the code for it before I realized so I kept it in
-    
-    #Postive
-    #for word in posDictionary.keys(): #Loops through each word in the dictionary
-    #    probability =  (posDictionary[word] / len(clean_list)) #Works out the probability of the word
-    #    print(f"The probablility of the word {word} appearing in the positive list is : {probability}") #Prints word and probability
-    #input("Hit enter to continue:")
-
-    #Negative
-    #print("")
-    #for word in negDictionary.keys():
-    #    probability =  (negDictionary[word] / len(clean_list2))
-    #    print(f"The probablility of the word {word} appearing in the negative list is : {probability}")
-    #input("Hit enter to continue:")
-
-    #Full List
-    #print("")
-    #for word in fullDictionary.keys():
-    #    probability =  (fullDictionary[word] / (len(clean_list) + len(clean_list2) ) )
-    #    print(f"The probablility of the word {word} appearing in the full list is : {probability}")
-    #input("Hit enter to continue:")
-
-
-
-
     #-------------------------------------------
     #Assigning the likelyhood of a word being Positive/Negative
     #-------------------------------------------
-    tweets = open("dataFiles/test/testPos.txt", 'r').read().lower().split("@") #Opens in file seperated by tweets
+    #Opens in file seperated by tweets
+    tweetsPos = open("dataFiles/test/testPos.txt", 'r').read().lower().split("@") 
+    tweetsNeg = open("dataFiles/test/testNeg.txt", 'r').read().lower().split("@")
+    tweets = tweetsPos + tweetsNeg 
     #Loops through words in the tweet to find any trained to be positive/negative
     for tweet in tweets:
         tweetWords = re.split(r"[^\w]", tweet) #Should clean up the special characters. TODO: Test this is properly fundtioning
 
-        probOfPos, count, probabiltiy = 0,0,0 #Initialise varibles needed foe the loop
+        probOfPos, count, probability = 0,0,0 #Initialise varibles needed foe the loop
         
         #Loops through each word in the tweet, if it appeared in the trainer it goes through and grabs the probability. Then adds that to the total probability and ups counted words
         for word in tweetWords:
@@ -100,13 +77,22 @@ def wordCounter(clean_list, clean_list2, fullList, posDictionary, negDictionary,
                 probOfPos += vocabPos[word] #total probability 
                 probability =(probOfPos/count) #works out average probability 
                 #print("The probablility that the whole tweet is Positive is" , probability) #for testing 
-                    
+        
+
         if probability > 0.5:
-            print(f"{tweet} is positive")
+            finalVerdict[tweet] = "Positive"
+            #print(f"{tweet} is positive")
         elif probability < 0.5:
-            print(f"{tweet} is negative")
+            finalVerdict[tweet] = "Negative"
+            #print(f"{tweet} is negative")
         else:
-            print("Tweet fifty fifty.")
+            finalVerdict[tweet] = "Undecided"
+    return finalVerdict
+        
+
+def accuracyCheck(verdict):
+    for key, value in verdict.items():
+        print(key,value)
 
 #Reads in the File and sorts it into the dictionary. 
 def main():
@@ -141,6 +127,42 @@ def main():
     fullDictionary = dict.fromkeys(fullList, 0)
     
     #Calls on the wordCounter
-    wordCounter(clean_list, clean_list2 ,fullList, posDictionary, negDictionary, fullDictionary) 
-
+    verdict = wordCounter(clean_list, clean_list2 ,fullList, posDictionary, negDictionary, fullDictionary) 
+    accuracyCheck(verdict)
 main()
+
+
+
+
+
+
+
+
+    #----------------------------------------------------------------------------------------------------
+    #G E T T I N G  P R O B A B I L I T Y  O F  A  W O R D  A P P E A R I N G  I N  A  G I V E N  L I S T 
+    #----------------------------------------------------------------------------------------------------
+    #NOTE: this wasn't needed but I misread the spec and wrote the code for it before I realized so I kept it in cause I though it was interesting. 
+    #To get it to work just insert it into wordCounter
+    
+    #Postive
+    #for word in posDictionary.keys(): #Loops through each word in the dictionary
+    #    probability =  (posDictionary[word] / len(clean_list)) #Works out the probability of the word
+    #    print(f"The probablility of the word {word} appearing in the positive list is : {probability}") #Prints word and probability
+    #input("Hit enter to continue:")
+
+    #Negative
+    #print("")
+    #for word in negDictionary.keys():
+    #    probability =  (negDictionary[word] / len(clean_list2))
+    #    print(f"The probablility of the word {word} appearing in the negative list is : {probability}")
+    #input("Hit enter to continue:")
+
+    #Full List
+    #print("")
+    #for word in fullDictionary.keys():
+    #    probability =  (fullDictionary[word] / (len(clean_list) + len(clean_list2) ) )
+    #    print(f"The probablility of the word {word} appearing in the full list is : {probability}")
+    #input("Hit enter to continue:")
+
+
+
