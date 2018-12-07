@@ -1,4 +1,7 @@
 import re
+import matplotlib.pyplot as plt
+plt.rcdefaults
+import numpy as np
 
 #Reads in data, splits up each word and makes lowercase  
 def readFile(src):
@@ -91,7 +94,21 @@ def predictTweets(posDictionary, negDictionary, fullDictionary, vocabPos):
     negativeCount = len(tweetsNeg)
     accuracyPos = ((postiveTweets/(positiveCount+negativeCount))*100)
     accuracyNeg = ((negativeTweets/(positiveCount+negativeCount))*100)
-    print(f"The positive accuracy is {accuracyPos} \nThe negative accuracy is {accuracyNeg}")    
+    print(f"The positive accuracy is {accuracyPos} \nThe negative accuracy is {accuracyNeg}")   
+
+    #-------------------------------------
+    #DATA VISUALIZATION 
+    #------------------------------------
+    y_pos = [-1, round(accuracyNeg)]
+    object = ('Processed +ve Accuracy', 'Processed -ve Accuracy')
+    plot = [accuracyPos, accuracyNeg]
+    y_pos = np.arange(len(object))
+    plt.bar(y_pos, plot, align='center', alpha=0.1)
+    plt.xticks(y_pos, object)
+    plt.ylabel("Value")
+    plt.xlabel("Data")
+    plt.title("Data Visualization")
+    plt.show() 
 
 
 #Reads in the File and sorts it into the dictionary. 
@@ -139,7 +156,12 @@ def main():
     #-----------------------------------------------------------------------------------
     #PREDICT IF TWEETS ARE POSITIVE OR NEGATIVE
     #-----------------------------------------------------------------------------------
+
+
+    #Data Visualization
     predictTweets(posDictionary, negDictionary, fullDictionary, vocabPos) 
+
+
         
     
 
